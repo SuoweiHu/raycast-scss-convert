@@ -140,7 +140,7 @@ export default function Command() {
                 id="outputStyle"
                 title="Output Style"
                 value={config.outputStyle}
-                onChange={(data) => { set_config((conf) => ({ ...conf, outputStyle: data })); /*set_LocalConfig({...config,outputStyle:data});*/ /*if(!isLoading){showToast({title:"3 Configuration saved!"});}*/}}
+                onChange={(data) => { set_config((conf) => ({ ...conf, outputStyle: data }));}}
                 info={`Minified Output (CSS) will save a compressed version of CSS file where unnecessary characters (like whitespace, comments, and formatting) are removed to reduce file size.`}
             >
                 <Form.Dropdown.Item value="expanded" title="Expanded (default)" />
@@ -150,7 +150,7 @@ export default function Command() {
                 id="sourceMap"
                 title="Source Map Type"
                 value={config.sourceMap}
-                onChange={(data) => { set_config((conf) => ({ ...conf, sourceMap: data })); /*set_LocalConfig({...config,outputStyle:data});*/ /*if(!isLoading){showToast({title:"3 Configuration saved!"});}*/}}
+                onChange={(data) => { set_config((conf) => ({ ...conf, sourceMap: data }));}}
                 info={`A source map is a file that maps from the transformed or compiled version of your code back to the original source files, enabling developers to view and debug their original source code directly in the browser's developer tools, despite the code actually running being minified or compiled.`}
             >
                 <Form.Dropdown.Item value="file" title="File" />
@@ -158,12 +158,12 @@ export default function Command() {
                 <Form.Dropdown.Item value="auto" title="Auto (default)" />
                 <Form.Dropdown.Item value="none" title="None" />
             </Form.Dropdown>
-            <Form.Checkbox
+            {/* <Form.Checkbox
                 id="watchCompile"
                 label={`--watch\t\t\t(Recompile when file changes?)`}
                 value={config.watchCompile}
-                onChange={(data) => { set_config((conf) => ({ ...conf, watchCompile: data })) /*set_LocalConfig({...config,watchCompile:data});*/ /*if(!isLoading){showToast({title:"5 Configuration saved!"});}*/}}
-            />
+                onChange={(data) => { set_config((conf) => ({ ...conf, watchCompile: data }))}}
+            /> */}
         </Form>
     );
 }
