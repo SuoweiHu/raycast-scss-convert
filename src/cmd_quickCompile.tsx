@@ -1,13 +1,13 @@
 import { Form, ActionPanel, Action, showToast, showHUD, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
-import { CompileConfig, default_config, exec_compile, get_LocalConfig, set_LocalConfig } from "./util_compile";
+import { CompileConfig, default_config, exec_compile, get_LocalConfig_prev, remove_LocalConfig_prev, set_LocalConfig_prev } from "./util_compile";
 import fs from "fs";
 
 export default function Command() {
   const [config, set_config] = useState<CompileConfig>(default_config);
   const [isLoading, set_isLoading] = useState<boolean>(true);
   useEffect(() => {
-    get_LocalConfig().then((values) => {
+    get_LocalConfig_prev().then((values) => {
       const prev_scssPath: string = values[0] == undefined ? "" : values[0];
       const prev_cssPath: string = values[1] == undefined ? "" : values[1];
       const prev_outputStyle: string = values[2] == undefined ? "" : values[2];
@@ -41,7 +41,7 @@ export default function Command() {
                 watchCompile: false,
               };
               exec_compile(cur_config);
-              set_LocalConfig(cur_config);
+              set_LocalConfig_prev(cur_config);
               showHUD("✅ File has been Compiled (and Configuration Saved)");
             }}
           />
@@ -56,7 +56,7 @@ export default function Command() {
                 sourceMap: values.sourceMap,
                 watchCompile: false,
               };
-              set_LocalConfig(cur_config);
+              set_LocalConfig_prev(cur_config);
               showToast({ title: "⚙️\tConfiguration Saved", style: Toast.Style.Success });
             }}
           />
@@ -65,7 +65,7 @@ export default function Command() {
             shortcut={{ modifiers: ["cmd"], key: "r" }}
             onSubmit={() => {
               set_config(default_config);
-              set_LocalConfig(default_config);
+              remove_LocalConfig_prev();
               showToast({ title: "⚙️\tConfiguration Reset", style: Toast.Style.Success });
             }}
           />
