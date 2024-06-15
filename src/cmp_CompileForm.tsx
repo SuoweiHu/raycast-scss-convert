@@ -1,17 +1,18 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ElementType, ReactNode, useEffect, useState } from "react";
 import { CompileConfig, default_config, get_LocalConfig_prev } from "./util_compile";
 import { Form, Toast, showToast } from "@raycast/api";
 import fs from "fs";
 
-export function compilForm(form_action: ReactNode, show_watchOption: boolean, restore_prevConfig: boolean) {
-  // state declaration
+export function CompilForm(props : {FormAction: ElementType, show_watchOption: boolean, restore_prevConfig: boolean}) {
+
+    // state declaration
   const [isLoading, set_isLoading] = useState<boolean>(true);
   const [config, set_config] = useState<CompileConfig>(default_config);
 
   // get last (previous) compiled configuration from LocalStorage
   useEffect(() => {
     get_LocalConfig_prev().then((values) => {
-      if (restore_prevConfig) {
+      if (props.restore_prevConfig) {
         const prev_scssPath: string = values[0] == undefined ? "" : values[0];
         const prev_cssPath: string = values[1] == undefined ? "" : values[1];
         const prev_outputStyle: string = values[2] == undefined ? "" : values[2];
@@ -29,9 +30,9 @@ export function compilForm(form_action: ReactNode, show_watchOption: boolean, re
     });
   }, [isLoading]);
 
-  // return react component
+  // return react rendering component
   return (
-    <Form navigationTitle="Compile SCSS to CSS" isLoading={isLoading} actions={form_action}>
+    <Form navigationTitle="Compile SCSS to CSS" isLoading={isLoading} actions={ <props.FormAction config={config} set_config={set_config}/> }>
       <Form.Description title="" text={` `} />
       <Form.FilePicker
         id="scssPath"
@@ -89,6 +90,18 @@ export function compilForm(form_action: ReactNode, show_watchOption: boolean, re
         }}
         info={`If a directory is chosen for the "target", then the command will by default pick the "style.css" as the target file`}
       />
+      {props.show_watchOption ? (
+        <Form.Checkbox
+          id="watchCompile"
+          label={`--watch\t\t\t(Recompile when file changes?)`}
+          value={config.watchCompile}
+          onChange={(data) => {
+            set_config((conf) => ({ ...conf, watchCompile: data }));
+          }}
+        />
+      ) : (
+        <></>
+      )}
       <Form.Dropdown
         id="outputStyle"
         title="Output Style"
@@ -115,18 +128,7 @@ export function compilForm(form_action: ReactNode, show_watchOption: boolean, re
         <Form.Dropdown.Item value="auto" title="Auto (default)" />
         <Form.Dropdown.Item value="none" title="None" />
       </Form.Dropdown>
-      {show_watchOption ? (
-        <Form.Checkbox
-          id="watchCompile"
-          label={`--watch\t\t\t(Recompile when file changes?)`}
-          value={config.watchCompile}
-          onChange={(data) => {
-            set_config((conf) => ({ ...conf, watchCompile: data }));
-          }}
-        />
-      ) : (
-        <></>
-      )}
+
     </Form>
   );
 }
