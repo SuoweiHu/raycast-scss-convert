@@ -64,6 +64,8 @@ export function CompilForm(props : {FormAction: ElementType, show_watchOption: b
         }}
         info={`If a directory is chosen for the "source", then the command will by default pick the "style.scss" as source file.`}
       />
+      {config.scssPath!="" ? <Form.Description text={config.scssPath}/> : <></>}
+
       <Form.FilePicker
         id="cssPath"
         title="Target (CSS)"
@@ -90,6 +92,8 @@ export function CompilForm(props : {FormAction: ElementType, show_watchOption: b
         }}
         info={`If a directory is chosen for the "target", then the command will by default pick the "style.css" as the target file`}
       />
+      { config.cssPath!="" ? <Form.Description text={config.cssPath}/> : <></>}
+
       {props.show_watchOption ? (
         <Form.Dropdown
             id="watchCompile"
