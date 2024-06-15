@@ -84,6 +84,7 @@ export default function Command() {
                 allowMultipleSelection={false}
                 canChooseDirectories
                 canChooseFiles={true}
+                error={config.scssPath == "" ? "SCSS Path is Required" : undefined}
                 value={config.scssPath == "" ? [] : [config.scssPath]}
                 onChange={(data) => {
                     if(data[0]!=undefined){
@@ -114,6 +115,7 @@ export default function Command() {
                 allowMultipleSelection={false}
                 canChooseDirectories
                 canChooseFiles={true}
+                error={config.cssPath == "" ? "CSS Path is Required" : undefined}
                 value={config.cssPath == "" ? [] : [config.cssPath]}
                 onChange={
                     (data) => {
