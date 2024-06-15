@@ -12,11 +12,51 @@
   "license": "MIT",
   "commands": [
     {
-      "name": "index",
+      "name": "cmd_quickCompile",
       "title": "Quick Compile SCSS",
       "subtitle": "with last compiled setting",
-      "description": "Quickly compile SCSS into CSS file",
+      "description": "Quickly compile SCSS file into CSS file; And save last compiled setting, so developer and quickly recompile with the same setting without having to configure again.",
       "mode": "view"
+    },
+    {
+      "name": "cmd_watchCompile",
+      "title": "Watch Compile SCSS",
+      "subtitle": "or Compile Once",
+      "description": "Compile SCSS file into CSS file. The developer can either choose to compile only once, or use the --watch option to monitor changes and recompile automatically.",
+      "mode": "view"
+    }
+  ],
+  "preferences": [
+    {
+      "title": "Compiler Path (sass)",
+      "type": "textfield",
+      "required": true,
+      "name": "pref_compilerPath",
+      "default": "/opt/homebrew/bin/sass",
+      "placeholder": "/opt/homebrew/bin/sass",
+      "description": "Path to the SCSS compiler (sass)"
+    },
+    {
+      "title": "Before Compile",
+      "type": "dropdown",
+      "name": "pref_delBefCompile",
+      "description": "Whether to delete the style.css/styel.css.map before the compilation",
+      "required": true,
+      "default": "delete-css-sourcemap",
+      "data": [
+        {
+          "title": "Do Not Delete",
+          "value": "no-delete"
+        },
+        {
+          "title": "Delete CSS only",
+          "value": "delete-css"
+        },
+        {
+          "title": "Delete CSS and SourceMap",
+          "value": "delete-css-sourcemap"
+        }
+      ]
     }
   ],
   "dependencies": {
