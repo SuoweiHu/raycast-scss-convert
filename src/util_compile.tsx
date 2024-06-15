@@ -95,10 +95,22 @@ export async function remove_LocalConfig_id(id: string) {
 
 export async function update_LocalConfig_count(delta: number = 1) {
     LocalStorage.getItem(`count`).then((data) => {
-        let _count_ = 0;
-        if (data != undefined) { _count_ = data as number }
-        return LocalStorage.setItem(`count`, _count_ + delta);
+        let count = data as number;        if(count == undefined){count=0;}
+        let update_count = count + delta;  if(update_count<0){update_count=0;}
+        return LocalStorage.setItem(`count`, update_count);
     });
+}
+export async function read_LocalConfig_count() {
+    return update_LocalConfig_count(0);
+}
+export async function add_LocalConfig_count() {
+    return update_LocalConfig_count(1);
+}
+export async function remove_LocalConfig_count() {
+    return update_LocalConfig_count(-1);
+}
+export async function reset_LocalConfig_count() {
+    return LocalStorage.setItem(`count`, 0);
 }
 
 // ██████████████████████████████████████████████████████████████████████████████

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Action, ActionPanel, Color, Icon, List, Toast, showToast } from "@raycast/api";
+import { Action, ActionPanel, Color, Icon, List, Toast, showToast, useNavigation } from "@raycast/api";
 import { CompileConfig, CompileResult, exec_compile } from "./util_compile";
 import { truncatePath_disp as truncatePath } from "./util_other";
 
@@ -10,26 +10,30 @@ export default function Command() {
 
     // set_LocalConfig_id("1", default_config);
     // get_LocalConfig_id("1").then((data)=>{console.log(data);});
-    const test_config_1: CompileConfig = {
-        scssPath: "/Users/suowei_hu/Downloads/style.scss",
-        cssPath: "/Users/suowei_hu/Downloads/style.css",
-        outputStyle: "expanded",
-        sourceMap: "auto",
-        watchCompile: false,
-    };
-    const test_config_2: CompileConfig = {
-        scssPath: "/Users/suowei_hu/xxxx/yyyy/Desktop/style.scss",
-        cssPath: "/Users/suowei_hu/mmm/nnnn/Desktop/style.css",
-        outputStyle: "compressed",
-        sourceMap: "none",
-        watchCompile: true,
-    };
-    const config_s: CompileConfig[] = [test_config_1, test_config_2, test_config_2, test_config_2];
+
+    // ========================================================================================================================================
+    // [EXAMPLE DATA]
+    const test_config_1: CompileConfig   = {scssPath: "/Users/suowei_hu/Downloads/style.scss",cssPath: "/Users/suowei_hu/Downloads/style.css",outputStyle: "expanded",sourceMap: "auto",watchCompile: false,};
+    const test_config_2: CompileConfig   = {scssPath: "/Users/suowei_hu/xxxx/yyyy/Desktop/style.scss",cssPath: "/Users/suowei_hu/mmm/nnnn/Desktop/style.css",outputStyle: "compressed",sourceMap: "none",watchCompile: true,};
+    const config_s:      CompileConfig[] = [test_config_1, test_config_2, test_config_2, test_config_2];
+    // ========================================================================================================================================
+
+    // const { push } = useNavigation();
 
     return (
         <List
             navigationTitle="Convert SCSS to CSS"
             searchBarPlaceholder="Search by filename or directory"
+            actions={
+                <ActionPanel>
+                    <Action
+                        title="Add Compile Configuration"
+                        onAction={() => {
+
+                        }}
+                    />
+                </ActionPanel>
+            }
         >
             {config_s.map((config, config_index) => (
                 <List.Item
