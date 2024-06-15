@@ -43,7 +43,7 @@ export default function Command() {
                                 cssPath: values.cssPath[0] == null ? "" : values.cssPath[0],
                                 outputStyle: values.outputStyle,
                                 sourceMap: values.sourceMap,
-                                watchCompile: values.watchCompile,
+                                watchCompile: false,
                             };
                             exec_compile(cur_config);
                             set_LocalConfig(cur_config);
@@ -59,7 +59,7 @@ export default function Command() {
                                 cssPath: values.cssPath[0] == null ? "" : values.cssPath[0],
                                 outputStyle: values.outputStyle,
                                 sourceMap: values.sourceMap,
-                                watchCompile: values.watchCompile,
+                                watchCompile: false,
                             };
                             set_LocalConfig(cur_config);
                             showToast({ title: "⚙️\tConfiguration Saved", style: Toast.Style.Success });
