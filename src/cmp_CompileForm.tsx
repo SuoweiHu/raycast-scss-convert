@@ -91,14 +91,18 @@ export function CompilForm(props : {FormAction: ElementType, show_watchOption: b
         info={`If a directory is chosen for the "target", then the command will by default pick the "style.css" as the target file`}
       />
       {props.show_watchOption ? (
-        <Form.Checkbox
-          id="watchCompile"
-          label={`--watch\t\t\t(Recompile when file changes?)`}
-          value={config.watchCompile}
-          onChange={(data) => {
-            set_config((conf) => ({ ...conf, watchCompile: data }));
-          }}
-        />
+        <Form.Dropdown
+            id="watchCompile"
+            title="Watch Changes"
+            value={config.watchCompile?"true":"false"}
+            onChange={(data) => {
+                set_config((conf) => ({ ...conf, watchCompile: data=="true" }));
+            }}
+            info={`Tells Sass to monitor for changes and automatically recompile the CSS whenever any modifications are detected.`}
+        >
+            <Form.Dropdown.Item value="false" title="No-Watch (default)" />
+            <Form.Dropdown.Item value="true" title="Watch" />
+        </Form.Dropdown>
       ) : (
         <></>
       )}
