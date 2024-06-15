@@ -1,7 +1,7 @@
-import * as path from 'path';
+import * as path from "path";
 
 export function delayOperation(milliseconds: number) {
-    return new Promise((resolve) => setTimeout(resolve, milliseconds));
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 export function truncatePath_disp(filePath: string): string {
