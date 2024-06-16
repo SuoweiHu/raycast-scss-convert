@@ -7,7 +7,6 @@ import { delayOperation } from "./util_other";
 // Type/Default Config Related
 
 export type CompileConfig = {
-    id:number|undefined;
     scssPath: string;
     cssPath: string;
     outputStyle: string;
@@ -16,7 +15,6 @@ export type CompileConfig = {
 };
 
 export const default_config: CompileConfig = {
-    id:undefined,
     scssPath: "",
     cssPath: "",
     outputStyle: "expanded",
@@ -52,23 +50,43 @@ export async function remove_LocalConfig_prev() {
 // Watch Config Related
 
 
-export async function getAll_LocalConfig_watch(): Promise<[CompileConfig]> {
-    return new Promise<[CompileConfig]>((resolve, reject) => {
+export async function getAll_LocalConfig_watch(): Promise<CompileConfig[]> {
+    return new Promise<CompileConfig[]>((resolve) => {
         LocalStorage.getItem("watch_configs").then((data) => {
-            if (data == undefined) {
-                reject([]);
-            } else {
-                let _config_: [CompileConfig] = JSON.parse(data as string);
-                resolve(_config_);
-            }
+            if (data == undefined) {  resolve([]);
+            } else {                  resolve(JSON.parse(data as string) as CompileConfig[]);}
         })
     });
 }
-export async function add_LocalConfig_watch(conf: CompileConfig) {
-    return LocalStorage.setItem("prev_config", JSON.stringify(conf));
+export async function add_LocalConfig_watch(_conf_: CompileConfig):Promise<void>{
+    return new Promise<void>((resolve, reject) => {
+        getAll_LocalConfig_watch().then((configs) => {
+            // Check if config of same sass-path + css-path already exist ?
+            configs.forEach(config => { if(config.cssPath==_conf_.cssPath && config.scssPath==_conf_.scssPath){ reject("Found duplicated item");}});
+            // If no duplicate found then add it in
+            configs.push(_conf_);
+            LocalStorage.setItem("watch_configs", JSON.stringify(configs));
+            resolve();
+        });
+    });
 }
-export async function remove_LocalConfigs_watch() {
-    return LocalStorage.removeItem("prev_config");
+export async function remove_LocalConfig_watch(_conf_: CompileConfig) {
+    return new Promise<void>((resolve, reject) => {
+        getAll_LocalConfig_watch().then((configs) => {
+            // Check if config of same sass-path + css-path exist, if do then remove it
+            for (let i = 0; i < configs.length; i++) {
+                const config = configs[i];
+                if(config.cssPath==_conf_.cssPath && config.scssPath==_conf_.scssPath){configs.splice(i,1);}
+                LocalStorage.setItem("watch_configs", JSON.stringify(configs));
+                resolve();
+            }
+            // If no duplicate found then throw warning
+            reject("No such configuration can be found");
+        });
+    });
+}
+export async function removeAll_LocalConfigs_watch() {
+    return LocalStorage.removeItem("watch_configs");
 }
 
 

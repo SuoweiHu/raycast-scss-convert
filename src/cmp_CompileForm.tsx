@@ -3,7 +3,14 @@ import { CompileConfig, default_config, get_LocalConfig_prev } from "./util_comp
 import { Form, Toast, showToast } from "@raycast/api";
 import fs from "fs";
 
-export function CompilForm(props: { FormAction: ElementType, show_watchOption: boolean, restore_prevConfig: boolean }) {
+export function CompilForm(
+    props: {
+        FormAction: ElementType,
+        show_watchOption: boolean,
+        restore_prevConfig: boolean,
+        pop_callBack?: Function,
+    }
+) {
 
     // state declaration
     const [isLoading, set_isLoading] = useState<boolean>(true);
@@ -22,7 +29,7 @@ export function CompilForm(props: { FormAction: ElementType, show_watchOption: b
 
     // return react rendering component
     return (
-        <Form navigationTitle="Compile SCSS to CSS" isLoading={isLoading} actions={<props.FormAction config={config} set_config={set_config} />}>
+        <Form navigationTitle="Compile SCSS to CSS" isLoading={isLoading} actions={<props.FormAction config={config} set_config={set_config} pop_callBack={props.pop_callBack}/>}>
             <Form.Description title="" text={` `} />
             <Form.FilePicker
                 id="scssPath"
@@ -37,7 +44,7 @@ export function CompilForm(props: { FormAction: ElementType, show_watchOption: b
                         if (!fs.existsSync(data[0]) || fs.lstatSync(data[0]).isDirectory()) {
                             if (fs.existsSync(data[0] + "/style.scss")) {
                                 set_config((conf) => ({ ...conf, scssPath: data[0] + "/style.scss" }));
-                                showToast({ title: `📁\tUsing "style.scss" in the directory` });
+                                // showToast({ title: `📁\tUsing "style.scss" in the directory` });
                             } else {
                                 showToast({ title: `⚠️\tNo "scss file" can be found in the directory`, style: Toast.Style.Failure });
                             }
@@ -68,7 +75,7 @@ export function CompilForm(props: { FormAction: ElementType, show_watchOption: b
                     if (data[0] != undefined) {
                         if (!fs.existsSync(data[0]) || fs.lstatSync(data[0]).isDirectory()) {
                             set_config((conf) => ({ ...conf, cssPath: data[0] + "/style.css" }));
-                            showToast({ title: `📁\tUsing "style.css" in the directory` });
+                            // showToast({ title: `📁\tUsing "style.css" in the directory` });
                         } else {
                             if (data[0].toLowerCase().endsWith(".css")) {
                                 set_config((conf) => ({ ...conf, cssPath: data[0] }));
