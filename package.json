@@ -5,7 +5,6 @@
   "description": "Utility that convert SCSS (Sassy Cascading Style Sheets) file into CSS file",
   "icon": "scss-icon.png",
   "author": "SuoweiHu",
-  "owner": "sh-raycast",
   "categories": [
     "Developer Tools"
   ],
