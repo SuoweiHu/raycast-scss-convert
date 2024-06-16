@@ -8,7 +8,8 @@ export function QuickCompileAction(
         config:CompileConfig,
         set_config:Dispatch<React.SetStateAction<CompileConfig>>
         pop_callBack?: Function,
-        modify_config?:CompileConfig,
+        prefill_config?:CompileConfig,
+        delete_prefill?:boolean,
     }
 ) {
     return (

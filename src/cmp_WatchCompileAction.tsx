@@ -8,7 +8,8 @@ export function WatchCompileAction(
         config:CompileConfig,
         set_config:Dispatch<React.SetStateAction<CompileConfig>>
         pop_callBack?: Function,
-        modify_config?:CompileConfig,
+        prefill_config?:CompileConfig,
+        delete_prefill?:boolean,
     }
 ) {
     const {push, pop} = useNavigation();
@@ -25,8 +26,8 @@ export function WatchCompileAction(
               sourceMap: values.sourceMap,
               watchCompile: false,
             };
-            if(props.modify_config!=undefined){
-                remove_LocalConfig_watch(props.modify_config).then(()=>{
+            if(props.delete_prefill==true && props.prefill_config!=undefined){
+                remove_LocalConfig_watch(props.prefill_config).then(()=>{
                     add_LocalConfig_watch(cur_config).then((msg)=>{
                         if(msg=="updated duplicate"){ showToast({ title: "⚙️\tConfiguration Saved (updated existing config)", style: Toast.Style.Success });
                         } else {                      showToast({ title: "⚙️\tConfiguration Saved", style: Toast.Style.Success });}

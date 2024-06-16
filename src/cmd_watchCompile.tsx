@@ -128,6 +128,22 @@ export default function Command() {
                                                 restore_prevConfig={false}
                                                 pop_callBack={() => { set_needReload(true); }}
                                                 prefill_config={config}
+                                                delete_prefill={true}
+                                            />);
+                                        }}
+                                    />
+                                    <Action
+                                        title="Duplicate Configuration"
+                                        icon={Icon.PlusCircle}
+                                        shortcut={{ modifiers: ["cmd"], key: "d" }}
+                                        onAction={()=>{
+                                            push(<CompilForm
+                                                FormAction={WatchCompileAction}
+                                                show_watchOption={true}
+                                                restore_prevConfig={false}
+                                                pop_callBack={() => { set_needReload(true); }}
+                                                prefill_config={config}
+                                                delete_prefill={false}
                                             />);
                                         }}
                                     />

@@ -11,6 +11,7 @@ export function CompilForm(
         restore_prevConfig: boolean,
         pop_callBack?: Function,
         prefill_config?:CompileConfig,
+        delete_prefill?:boolean,
     }
 ) {
     // state declaration
@@ -42,7 +43,8 @@ export function CompilForm(
                     config={config}
                     set_config={set_config}
                     pop_callBack={props.pop_callBack}
-                    modify_config={props.prefill_config}
+                    prefill_config={props.prefill_config}
+                    delete_prefill={props.delete_prefill}
                 />
             }
         >
