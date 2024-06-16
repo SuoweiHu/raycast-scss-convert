@@ -7,6 +7,7 @@ import { delayOperation } from "./util_other";
 // Type/Default Config Related
 
 export type CompileConfig = {
+    id:number|undefined;
     scssPath: string;
     cssPath: string;
     outputStyle: string;
@@ -15,6 +16,7 @@ export type CompileConfig = {
 };
 
 export const default_config: CompileConfig = {
+    id:undefined,
     scssPath: "",
     cssPath: "",
     outputStyle: "expanded",
@@ -47,64 +49,28 @@ export async function remove_LocalConfig_prev() {
 }
 
 // ██████████████████████████████████████████████████████████████████████████████
-// Certain ID's Config Related
+// Watch Config Related
 
-export async function set_LocalConfig_id(id: string, conf: CompileConfig) {
-    return Promise.all([
-        LocalStorage.setItem(`${id}_scssPath`, conf.scssPath),
-        LocalStorage.setItem(`${id}_cssPath`, conf.cssPath),
-        LocalStorage.setItem(`${id}_outputStyle`, conf.outputStyle),
-        LocalStorage.setItem(`${id}_sourceMap`, conf.sourceMap),
-        LocalStorage.setItem(`${id}_watchCompile`, conf.watchCompile),
-    ]);
-}
-export async function get_LocalConfig_id(id: string) {
-    return Promise.all([
-        LocalStorage.getItem<string>(`${id}_scssPath`),
-        LocalStorage.getItem<string>(`${id}_cssPath`),
-        LocalStorage.getItem<string>(`${id}_outputStyle`),
-        LocalStorage.getItem<string>(`${id}_sourceMap`),
-        LocalStorage.getItem<string>(`${id}_watchCompile`),
-    ]);
-}
-export async function remove_LocalConfig_id(id: string) {
-    return Promise.all([
-        LocalStorage.removeItem(`${id}_scssPath`),
-        LocalStorage.removeItem(`${id}_cssPath`),
-        LocalStorage.removeItem(`${id}_outputStyle`),
-        LocalStorage.removeItem(`${id}_sourceMap`),
-        LocalStorage.removeItem(`${id}_watchCompile`),
-    ]);
-}
 
-// ██████████████████████████████████████████████████████████████████████████████
-// Count Related
-
-export async function update_LocalConfig_count(delta: number = 1) {
-    LocalStorage.getItem(`count`).then((data) => {
-        let count = data as number;
-        if (count == undefined) {
-            count = 0;
-        }
-        let update_count = count + delta;
-        if (update_count < 0) {
-            update_count = 0;
-        }
-        return LocalStorage.setItem(`count`, update_count);
+export async function getAll_LocalConfig_watch(): Promise<[CompileConfig]> {
+    return new Promise<[CompileConfig]>((resolve, reject) => {
+        LocalStorage.getItem("watch_configs").then((data) => {
+            if (data == undefined) {
+                reject([]);
+            } else {
+                let _config_: [CompileConfig] = JSON.parse(data as string);
+                resolve(_config_);
+            }
+        })
     });
 }
-export async function read_LocalConfig_count() {
-    return update_LocalConfig_count(0);
+export async function add_LocalConfig_watch(conf: CompileConfig) {
+    return LocalStorage.setItem("prev_config", JSON.stringify(conf));
 }
-export async function add_LocalConfig_count() {
-    return update_LocalConfig_count(1);
+export async function remove_LocalConfigs_watch() {
+    return LocalStorage.removeItem("prev_config");
 }
-export async function remove_LocalConfig_count() {
-    return update_LocalConfig_count(-1);
-}
-export async function reset_LocalConfig_count() {
-    return LocalStorage.setItem(`count`, 0);
-}
+
 
 // ██████████████████████████████████████████████████████████████████████████████
 // Compilation Related

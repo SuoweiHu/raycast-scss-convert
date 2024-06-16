@@ -14,6 +14,7 @@ export default function Command() {
     const [configs, set_configs] = useState<CompileConfig[]>([]);
     useEffect(() => {
         const test_config_1: CompileConfig = {
+            id:1,
             scssPath: "/Users/suowei_hu/Downloads/style.scss",
             cssPath: "/Users/suowei_hu/Downloads/style.css",
             outputStyle: "expanded",
@@ -21,13 +22,30 @@ export default function Command() {
             watchCompile: false,
         };
         const test_config_2: CompileConfig = {
+            id:2,
             scssPath: "/Users/suowei_hu/xxxx/yyyy/Desktop/style.scss",
             cssPath: "/Users/suowei_hu/mmm/nnnn/Desktop/style.css",
             outputStyle: "compressed",
             sourceMap: "none",
             watchCompile: true,
         };
-        set_configs([test_config_1, test_config_2, test_config_2, test_config_2]);
+        const test_config_3: CompileConfig = {
+            id:undefined,
+            scssPath: "/Users/suowei_hu/xxxx/yyyy/Desktop/style.scss",
+            cssPath: "/Users/suowei_hu/mmm/nnnn/Desktop/style.css",
+            outputStyle: "compressed",
+            sourceMap: "none",
+            watchCompile: true,
+        };
+        const test_config_4: CompileConfig = {
+            id:4,
+            scssPath: "/Users/suowei_hu/xxxx/yyyy/Desktop/style.scss",
+            cssPath: "/Users/suowei_hu/mmm/nnnn/Desktop/style.css",
+            outputStyle: "expanded",
+            sourceMap: "none",
+            watchCompile: true,
+        };
+        set_configs([test_config_1, test_config_2, test_config_3, test_config_4]);
     }, []);
     // ========================================================================================================================================
 
@@ -36,14 +54,14 @@ export default function Command() {
             navigationTitle="Convert SCSS to CSS"
             searchBarPlaceholder="Search by filename or directory"
         >
-            {configs.map((config, config_index) => (
+            {configs.map((config:CompileConfig, config_index) => (
                 <List.Item
                     key={`config_${config_index}`}
                     keywords={[...config.scssPath.split("/"), ...config.cssPath.split("/")]}
                     title={{ value: truncatePath(config.scssPath), tooltip: config.scssPath }}
                     subtitle={{ value: truncatePath(config.cssPath), tooltip: config.cssPath }}
                     icon={config.watchCompile ? { source: Icon.CheckCircle } : { source: Icon.Circle }}
-                    accessories={config.outputStyle == "compressed" ? [{ tag: "Minified" }] : []}
+                    accessories={[config.outputStyle == "compressed" ? { tag: "Minified" }:{},config.id!=undefined?{tag:config.id!.toString()}:{tag:"#"},]}
                     actions={
                         <ActionPanel>
                             <Action
