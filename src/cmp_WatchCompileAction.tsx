@@ -1,5 +1,5 @@
 import { Action, ActionPanel, Toast, showHUD, showToast, useNavigation } from "@raycast/api";
-import { CompileConfig, CompileResult, add_LocalConfig_watch, default_config, exec_compile, remove_LocalConfig_prev, set_LocalConfig_prev } from "./util_compile";
+import { CompileConfig, CompileResult, add_LocalConfig_watch, default_config, exec_compile, remove_LocalConfig_prev, remove_LocalConfig_watch, set_LocalConfig_prev } from "./util_compile";
 import { Dispatch } from "react";
 
 // Action for the watch compile form
@@ -8,6 +8,7 @@ export function WatchCompileAction(
         config:CompileConfig,
         set_config:Dispatch<React.SetStateAction<CompileConfig>>
         pop_callBack?: Function,
+        modify_config?:CompileConfig,
     }
 ) {
     const {push, pop} = useNavigation();
@@ -24,9 +25,23 @@ export function WatchCompileAction(
               sourceMap: values.sourceMap,
               watchCompile: false,
             };
-            add_LocalConfig_watch(cur_config)
-                .then(()=>{showToast({ title: "⚙️\tConfiguration Saved", style: Toast.Style.Success });props.pop_callBack!();pop();})
-                .catch(()=>{showToast({ title: "⚙️\tConfiguration Already Exist", style: Toast.Style.Failure });});
+            if(props.modify_config!=undefined){
+                remove_LocalConfig_watch(props.modify_config).then(()=>{
+                    add_LocalConfig_watch(cur_config).then((msg)=>{
+                        if(msg=="updated duplicate"){ showToast({ title: "⚙️\tConfiguration Saved (updated existing config)", style: Toast.Style.Success });
+                        } else {                      showToast({ title: "⚙️\tConfiguration Saved", style: Toast.Style.Success });}
+                        if(props.pop_callBack!=undefined){props.pop_callBack();};
+                        pop();
+                    });
+                })
+            }else{
+                add_LocalConfig_watch(cur_config).then((msg)=>{
+                    if(msg=="updated duplicate"){ showToast({ title: "⚙️\tConfiguration Saved (updated existing config)", style: Toast.Style.Success });
+                    } else {                      showToast({ title: "⚙️\tConfiguration Saved", style: Toast.Style.Success });}
+                    if(props.pop_callBack!=undefined){props.pop_callBack();};
+                    pop();
+                });
+            }
           {}}}
         />
       </ActionPanel>

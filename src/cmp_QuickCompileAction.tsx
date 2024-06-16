@@ -3,7 +3,14 @@ import { CompileConfig, CompileResult, default_config, exec_compile, remove_Loca
 import { Dispatch } from "react";
 
 // Action for the quick compile form
-export function QuickCompileAction(props:{config:CompileConfig, set_config:Dispatch<React.SetStateAction<CompileConfig>>}) {
+export function QuickCompileAction(
+    props:{
+        config:CompileConfig,
+        set_config:Dispatch<React.SetStateAction<CompileConfig>>
+        pop_callBack?: Function,
+        modify_config?:CompileConfig,
+    }
+) {
     return (
         <ActionPanel>
             <Action.SubmitForm

@@ -58,15 +58,21 @@ export async function getAll_LocalConfig_watch(): Promise<CompileConfig[]> {
         })
     });
 }
-export async function add_LocalConfig_watch(_conf_: CompileConfig):Promise<void>{
-    return new Promise<void>((resolve, reject) => {
+export async function add_LocalConfig_watch(_conf_: CompileConfig):Promise<string>{
+    return new Promise<string>((resolve) => {
         getAll_LocalConfig_watch().then((configs) => {
-            // Check if config of same sass-path + css-path already exist ?
-            configs.forEach(config => { if(config.cssPath==_conf_.cssPath && config.scssPath==_conf_.scssPath){ reject("Found duplicated item");}});
-            // If no duplicate found then add it in
+            // Check if config of same sass-path + css-path exist, if do then remove it
+            let msg:string = "";
+            for (let i = 0; i < configs.length; i++) {
+                const config = configs[i];
+                if(config.cssPath==_conf_.cssPath && config.scssPath==_conf_.scssPath){
+                    configs.splice(i,1);
+                    msg="updated duplicate";
+                }
+            }
             configs.push(_conf_);
             LocalStorage.setItem("watch_configs", JSON.stringify(configs));
-            resolve();
+            resolve(msg);
         });
     });
 }

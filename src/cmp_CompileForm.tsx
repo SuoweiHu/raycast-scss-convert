@@ -2,6 +2,7 @@ import { ElementType, ReactNode, useEffect, useState } from "react";
 import { CompileConfig, default_config, get_LocalConfig_prev } from "./util_compile";
 import { Form, Toast, showToast } from "@raycast/api";
 import fs from "fs";
+import { delayOperation } from "./util_other";
 
 export function CompilForm(
     props: {
@@ -9,27 +10,42 @@ export function CompilForm(
         show_watchOption: boolean,
         restore_prevConfig: boolean,
         pop_callBack?: Function,
+        prefill_config?:CompileConfig,
     }
 ) {
-
     // state declaration
     const [isLoading, set_isLoading] = useState<boolean>(true);
     const [config, set_config] = useState<CompileConfig>(default_config);
 
     // get last (previous) compiled configuration from LocalStorage
     useEffect(() => {
-        get_LocalConfig_prev().then((_prev_config_) => {
-            if (props.restore_prevConfig) { set_config(_prev_config_); }
+
+        if (props.restore_prevConfig){
+            get_LocalConfig_prev()
+                .then    ((_prev_config_) => {set_config(_prev_config_); })
+                .catch   (()              => {set_config(default_config);})
+                .finally (()              => {set_isLoading(false);});
+        } else{
+            if(props.prefill_config!=undefined){set_config(props.prefill_config);}
+            else{set_config(default_config);}
             set_isLoading(false);
-        }).catch((_default_config_) => {
-            set_config(_default_config_);
-            set_isLoading(false);
-        });
+        }
     }, [isLoading]);
 
     // return react rendering component
     return (
-        <Form navigationTitle="Compile SCSS to CSS" isLoading={isLoading} actions={<props.FormAction config={config} set_config={set_config} pop_callBack={props.pop_callBack}/>}>
+        <Form
+            navigationTitle="Compile SCSS to CSS"
+            isLoading={isLoading}
+            actions={
+                <props.FormAction
+                    config={config}
+                    set_config={set_config}
+                    pop_callBack={props.pop_callBack}
+                    modify_config={props.prefill_config}
+                />
+            }
+        >
             <Form.Description title="" text={` `} />
             <Form.FilePicker
                 id="scssPath"
@@ -61,7 +77,7 @@ export function CompilForm(
                 }}
                 info={`If a directory is chosen for the "source", then the command will by default pick the "style.scss" as source file.`}
             />
-            {config.scssPath != "" ? <Form.Description text={config.scssPath} /> : <></>}
+            {/* {config.scssPath != "" ? <Form.Description text={config.scssPath} /> : <></>} */}
 
             <Form.FilePicker
                 id="cssPath"
@@ -89,7 +105,7 @@ export function CompilForm(
                 }}
                 info={`If a directory is chosen for the "target", then the command will by default pick the "style.css" as the target file`}
             />
-            {config.cssPath != "" ? <Form.Description text={config.cssPath} /> : <></>}
+            {/* {config.cssPath != "" ? <Form.Description text={config.cssPath} /> : <></>} */}
 
             {props.show_watchOption ? (
                 <Form.Dropdown
