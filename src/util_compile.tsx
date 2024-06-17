@@ -265,7 +265,7 @@ export async function exec_pause(conf: CompileConfig): Promise<CompileResult> {
         if (killed_any) {
           resolve({ success: true, message: "Killed all Process" });
         } else {
-          reject({ success: false, message: "No Process Found" });
+          resolve({ success: true, message: "No Process Found" });
         }
       },
     );
