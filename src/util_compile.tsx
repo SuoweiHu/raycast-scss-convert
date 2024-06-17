@@ -78,6 +78,23 @@ export async function add_LocalConfig_watch(_conf_: CompileConfig): Promise<stri
     });
   });
 }
+export async function update_LocalConfig_watch(_conf_old_: CompileConfig, _conf_new_: CompileConfig){
+    return new Promise<string>((resolve) => {
+        getAll_LocalConfig_watch().then((configs) => {
+          let msg: string = "";
+          for (let i = 0; i < configs.length; i++) {
+            const config = configs[i];
+            if (config.cssPath == _conf_old_.cssPath && config.scssPath == _conf_old_.scssPath) {
+              configs.splice(i, 1);
+              msg = "updated old_config";
+              configs.push(_conf_new_);
+            }
+          }
+          LocalStorage.setItem("watch_configs", JSON.stringify(configs));
+          resolve(msg);
+        });
+      });
+}
 export async function remove_LocalConfig_watch(_conf_: CompileConfig) {
   return new Promise<void>((resolve, reject) => {
     getAll_LocalConfig_watch().then((configs) => {
