@@ -42,16 +42,12 @@ export default function Command() {
               <Action.Push
                 title="New Compile Configuration"
                 shortcut={{ modifiers: ["cmd"], key: "n" }}
-                target={
-                  <CompilForm
+                target={<CompilForm
                     FormAction={WatchCompileAction}
                     show_watchOption={true}
                     restore_prevConfig={false}
-                    pop_callBack={() => {
-                      set_needReload(true);
-                    }}
-                  />
-                }
+                    pop_callBack={() => {set_needReload(true);}}
+                    />}
               />
             </ActionPanel>
           }
@@ -66,7 +62,7 @@ export default function Command() {
             icon={config.watchCompile ? { source: Icon.CheckCircle, tintColor: Color.Green } : { source: Icon.Circle }}
             accessories={[
               config.outputStyle == "compressed" ? { tag: "Minified" } : {},
-              { tag: (config_index + 1).toString() },
+            //   { tag: (config_index + 1).toString() },
             ]}
             actions={
               <ActionPanel>
@@ -117,12 +113,12 @@ export default function Command() {
                       onAction={() => {
                         showToast({ title: `Stopping...`, style: Toast.Style.Animated });
                         exec_pause(config)
-                          .then(() => {
+                          .then((data:CompileResult) => {
                             update_LocalConfig_watch(config, { ...config, watchCompile: false }).then(() => {
                               set_needReload(true);
                             });
                             delayOperation(500).then(() => {
-                              showToast({ title: `Stopped !`, style: Toast.Style.Success });
+                              showToast({ title: `Stopped ! (${data.message})`, style: Toast.Style.Success });
                             });
                           })
                           .catch(() => {
@@ -131,6 +127,19 @@ export default function Command() {
                       }}
                     />
                   )}
+                </ActionPanel.Section>
+                <ActionPanel.Section>
+                  <Action.Open
+                    title="Open SCSS File"
+                    target={config.scssPath}
+                    shortcut={{modifiers:["cmd"], key:"o"}}
+                  />
+                  <Action.Open
+                    title="Open CSS File"
+                    target={config.cssPath}
+                    shortcut={{modifiers:["cmd", "shift"], key:"o"}}
+                    onOpen={(data)=>{console.log(data);}}
+                  />
                 </ActionPanel.Section>
                 <ActionPanel.Section>
                   <Action.Push
