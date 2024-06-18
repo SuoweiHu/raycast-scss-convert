@@ -12,9 +12,16 @@ import {
   set_LocalConfig_prev,
   update_LocalConfig_watch,
 } from "./util_compile";
-import { delayOperation, truncatePath_disp as truncatePath } from "./util_other";
+import {
+  alertConfig_compile,
+  alertConfig_delete,
+  checkFile_exist,
+  delayOperation,
+  truncatePath_disp as truncatePath,
+} from "./util_other";
 import { CompilForm } from "./cmp_CompileForm";
 import { WatchCompileAction } from "./cmp_WatchCompileAction";
+import { open, showInFinder } from "@raycast/api";
 
 export default function Command() {
   const { push } = useNavigation();
@@ -26,6 +33,8 @@ export default function Command() {
     });
     set_needReload(false);
   }, [needReload]);
+
+  checkFile_exist("/Users/suowei_hu/Desktop/untitled folder/style.css");
 
   return (
     <List
@@ -42,12 +51,16 @@ export default function Command() {
               <Action.Push
                 title="New Compile Configuration"
                 shortcut={{ modifiers: ["cmd"], key: "n" }}
-                target={<CompilForm
+                target={
+                  <CompilForm
                     FormAction={WatchCompileAction}
                     show_watchOption={true}
                     restore_prevConfig={false}
-                    pop_callBack={() => {set_needReload(true);}}
-                    />}
+                    pop_callBack={() => {
+                      set_needReload(true);
+                    }}
+                  />
+                }
               />
             </ActionPanel>
           }
@@ -62,7 +75,7 @@ export default function Command() {
             icon={config.watchCompile ? { source: Icon.CheckCircle, tintColor: Color.Green } : { source: Icon.Circle }}
             accessories={[
               config.outputStyle == "compressed" ? { tag: "Minified" } : {},
-            //   { tag: (config_index + 1).toString() },
+              //   { tag: (config_index + 1).toString() },
             ]}
             actions={
               <ActionPanel>
@@ -113,7 +126,7 @@ export default function Command() {
                       onAction={() => {
                         showToast({ title: `Stopping...`, style: Toast.Style.Animated });
                         exec_pause(config)
-                          .then((data:CompileResult) => {
+                          .then((data: CompileResult) => {
                             update_LocalConfig_watch(config, { ...config, watchCompile: false }).then(() => {
                               set_needReload(true);
                             });
@@ -127,19 +140,6 @@ export default function Command() {
                       }}
                     />
                   )}
-                </ActionPanel.Section>
-                <ActionPanel.Section>
-                  <Action.Open
-                    title="Open SCSS File"
-                    target={config.scssPath}
-                    shortcut={{modifiers:["cmd"], key:"o"}}
-                  />
-                  <Action.Open
-                    title="Open CSS File"
-                    target={config.cssPath}
-                    shortcut={{modifiers:["cmd", "shift"], key:"o"}}
-                    onOpen={(data)=>{console.log(data);}}
-                  />
                 </ActionPanel.Section>
                 <ActionPanel.Section>
                   <Action.Push
@@ -217,6 +217,72 @@ export default function Command() {
                       });
                     }}
                   />
+                </ActionPanel.Section>
+                <ActionPanel.Section>
+                  <ActionPanel.Submenu
+                    title="Open File..."
+                    icon={Icon.Code}
+                    shortcut={{ modifiers: ["cmd"], key: "o" }}
+                  >
+                    <Action
+                      title="SCSS"
+                      shortcut={{ modifiers: ["cmd"], key: "1" }}
+                      onAction={() => {
+                        if (checkFile_exist(config.scssPath)) {
+                          open(config.scssPath);
+                        } else {
+                          alertConfig_delete(config).then(() => {
+                            set_needReload(true);
+                          });
+                        }
+                      }}
+                    />
+                    <Action
+                      title="CSS"
+                      shortcut={{ modifiers: ["cmd"], key: "2" }}
+                      onAction={() => {
+                        if (checkFile_exist(config.cssPath)) {
+                          open(config.cssPath);
+                        } else {
+                          alertConfig_compile(config).then(() => {
+                            open(config.cssPath);
+                          });
+                        }
+                      }}
+                    />
+                  </ActionPanel.Submenu>
+                  <ActionPanel.Submenu
+                    title="Reveal in Finder..."
+                    icon={Icon.Finder}
+                    shortcut={{ modifiers: ["cmd", "ctrl"], key: "r" }}
+                  >
+                    <Action
+                      title="SCSS"
+                      shortcut={{ modifiers: ["cmd"], key: "1" }}
+                      onAction={() => {
+                        if (checkFile_exist(config.scssPath)) {
+                          showInFinder(config.scssPath);
+                        } else {
+                          alertConfig_delete(config).then(() => {
+                            set_needReload(true);
+                          });
+                        }
+                      }}
+                    />
+                    <Action
+                      title="CSS"
+                      shortcut={{ modifiers: ["cmd"], key: "2" }}
+                      onAction={() => {
+                        if (checkFile_exist(config.cssPath)) {
+                          showInFinder(config.cssPath);
+                        } else {
+                          alertConfig_compile(config).then(() => {
+                            showInFinder(config.cssPath);
+                          });
+                        }
+                      }}
+                    />
+                  </ActionPanel.Submenu>
                 </ActionPanel.Section>
               </ActionPanel>
             }

@@ -250,7 +250,7 @@ export async function exec_pause(conf: CompileConfig): Promise<CompileResult> {
   const compile_cssPath: string = conf.cssPath.toLowerCase().endsWith(".css")
     ? conf.cssPath
     : conf.cssPath + "/style.css";
-  return new Promise<CompileResult>((resolve, reject) => {
+  return new Promise<CompileResult>((resolve) => {
     let killed_any = false;
     exec(
       `/bin/ps aux | /usr/bin/grep "sass --watch" | /usr/bin/grep "${compile_scssPath}" | /usr/bin/grep "${compile_cssPath}" | /usr/bin/grep -v "grep" | /usr/bin/grep -v "awk" | /usr/bin/awk '{printf "%s ","|" ; printf "%s ", $2; printf "%s ","|" ; for (i=11; i<=NF; i++) printf "%s ", $i; print "|"}'`,
