@@ -319,9 +319,13 @@ export default function Command() {
                       onAction={() => {
                         if (checkFile_exist(config.cssPath)) {
                           open(config.cssPath);
-                        } else {
+                        } else if (!checkFile_exist(config.cssPath) && checkFile_exist(config.scssPath)) {
                           alertConfig_compile(config).then(() => {
                             open(config.cssPath);
+                          });
+                        } else {
+                          alertConfig_delete(config).then(() => {
+                            set_needReload(true);
                           });
                         }
                       }}
@@ -351,9 +355,13 @@ export default function Command() {
                       onAction={() => {
                         if (checkFile_exist(config.cssPath)) {
                           showInFinder(config.cssPath);
-                        } else {
+                        } else if (!checkFile_exist(config.cssPath) && checkFile_exist(config.scssPath)) {
                           alertConfig_compile(config).then(() => {
                             showInFinder(config.cssPath);
+                          });
+                        } else {
+                          alertConfig_delete(config).then(() => {
+                            set_needReload(true);
                           });
                         }
                       }}
